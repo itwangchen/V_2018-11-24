@@ -13,33 +13,34 @@
   </div>
 </template>
 <script>
-  export default {
-    name: '',
-    data() {
-      return {
-        loginForm: {
-          password: '',
-          username: ''
-        }
+export default {
+  name: '',
+  data () {
+    return {
+      loginForm: {
+        password: '',
+        username: ''
       }
-    },
-    methods: {
-      // 登录
-      async handleLogin() {
-        // 将数据发给后端接收响应
-        let { data: { data: { token }, meta: { msg, status } } } = await this.$http.post('login', this.loginForm)
-        if (status === 200) {
-          //成功
-          this.$message.success(msg);
-          //写入token       
-          this.$router.push({ path: '/home' });
-        } else {
-          this.$message.error(msg);
-        }
-      }
-
     }
+  },
+  methods: {
+    // 登录
+    async handleLogin () {
+      // 将数据发给后端接收响应
+      let { data: { data: { token }, meta: { msg, status } } } = await this.$http.post('login', this.loginForm)
+      if (status === 200) {
+        // 成功
+        this.$message.success(msg)
+        // 写入token
+        localStorage.setItem('token', token)
+        this.$router.push({ path: '/home' })
+      } else {
+        this.$message.error(msg)
+      }
+    }
+
   }
+}
 </script>
 <style>
   .login_wrap {
