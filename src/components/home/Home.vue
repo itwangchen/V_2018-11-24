@@ -34,8 +34,8 @@
               <span>权限管理</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="1-1"> <i class="el-icon-menu"></i>角色列表</el-menu-item>
-              <el-menu-item index="1-1"> <i class="el-icon-menu"></i>权限列表</el-menu-item>
+              <el-menu-item index="roles"> <i class="el-icon-menu"></i>角色列表</el-menu-item>
+              <el-menu-item index="rights"> <i class="el-icon-menu"></i>权限列表</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="3">
@@ -100,7 +100,7 @@ export default {
       // 清除token
       localStorage.clear()
       // 跳转到登录页面
-      this.$router.push({ path: '/login' })
+      this.$router.push({ path: '/' })
       this.$message.success('退出成功!')
     }
   }

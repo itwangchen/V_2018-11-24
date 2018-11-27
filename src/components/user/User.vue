@@ -18,23 +18,23 @@
                     <el-button type="success" @click="addFormVisible = true" class="serach" plain>Add</el-button>
                     <!-- 添加用户弹出层 -->
                     <el-dialog title="添加用户" :visible.sync="addFormVisible">
-                        <el-form :model="addForm" label-position="left">
+                        <el-form :model="userForm" label-position="left">
                             <el-form-item label="用户名">
-                                <el-input v-model="addForm.username"></el-input>
+                                <el-input v-model="userForm.username"></el-input>
                             </el-form-item>
                             <el-form-item label="密码">
-                                <el-input v-model="addForm.password"></el-input>
+                                <el-input v-model="userForm.password"></el-input>
                             </el-form-item>
                             <el-form-item label="邮箱">
-                                <el-input v-model="addForm.email"></el-input>
+                                <el-input v-model="userForm.email"></el-input>
                             </el-form-item>
                             <el-form-item label="电话">
-                                <el-input v-model="addForm.mobile"></el-input>
+                                <el-input v-model="userForm.mobile"></el-input>
                             </el-form-item>
 
                         </el-form>
                         <div slot="footer" class="dialog-footer">
-                            <el-button @click="addFormVisible = false">取 消</el-button>
+                            <el-button @click="addNo">取 消</el-button>
                             <el-button type="primary" @click="addItem">确 定</el-button>
                         </div>
                     </el-dialog>
@@ -51,7 +51,10 @@
                     </el-table-column>
                     <el-table-column prop="mobile" label="电话" width="180">
                     </el-table-column>
-                    <el-table-column prop="create_time" label="创建日期" width="180">
+                    <el-table-column label="创建日期" width="180">
+                        <template slot-scope="scope">
+                            {{scope.row.create_time | fData}}
+                        </template>
                     </el-table-column>
                     <el-table-column label="用户状态">
                         <template slot-scope="props">
@@ -71,18 +74,18 @@
                             <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="handleDelete(props.row.id)"></el-button>
                             <!-- 编辑弹出层 -->
                             <el-dialog title="编辑用户" :visible.sync="EditFormVisible">
-                                <el-form class="editWrap" :label-position="leftposition" label-width="80px" :model="editForm">
+                                <el-form class="editWrap" :label-position="leftposition" label-width="80px" :model="userForm">
                                     <el-form-item label="用户名">
-                                        <el-input v-model="editForm.username" :disabled="true"></el-input>
+                                        <el-input v-model="userForm.username" :disabled="true"></el-input>
                                     </el-form-item>
                                     <el-form-item label="邮箱">
-                                        <el-input v-model="editForm.email"></el-input>
+                                        <el-input v-model="userForm.email"></el-input>
                                     </el-form-item>
                                     <el-form-item label="电话">
-                                        <el-input v-model="editForm.mobile"></el-input>
+                                        <el-input v-model="userForm.mobile"></el-input>
                                     </el-form-item>
                                     <el-button type="primary" class="editBtn" @click="handleEditOK">确定</el-button>
-                                    <el-button class="editBtn" @click="EditFormVisible=false">取消</el-button>
+                                    <el-button class="editBtn" @click="editNO">取消</el-button>
                                 </el-form>
 
                             </el-dialog>
@@ -136,10 +139,8 @@ export default {
       region: '',
       // 被设置的用户的Id
       RoleId: '',
-      // 增加数据
-      addForm: {},
-      // 编辑用户
-      editForm: {},
+      // 增加数据/编辑用户
+      userForm: {},
       thisPageNum: 1,
       // 设置可选择条数
       page_sizes: [6, 12, 18],
@@ -151,7 +152,7 @@ export default {
   },
 
   beforeMount () {
-    // 写入token
+    // // 写入token
     this.$http.defaults.headers.common['Authorization'] = localStorage.getItem('token')
     this.getList()
   },
@@ -160,40 +161,42 @@ export default {
     async   getList (pagenum, pagesize, search_Input) {
       // 默认搜索空,获取全部数据
       let { data: { data: { users, total }, meta: { msg, status } } } = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.search_Input}`)
-      this.tableData = users
-      users.forEach(e => {
-        e.create_time = this.dateBase(e.create_time)
-      })
-
-      // 总数据条数
-      this.total = total
-    },
-    // 定义补0 方法
-    bLing (num) {
-      return num >= 10 ? num : '0' + num
-    },
-    dateBase: function (date) {
-      // 处理时间 转化为时分秒
-      var dates = new Date(date)
-      var f = this.bLing(dates.getFullYear())
-      var m = this.bLing(dates.getMonth() + 1)
-      var d = this.bLing(dates.getDate())
-      return `${f}年${m}月${d}日`
-    },
-    // 添加用户
-    async addItem () {
-      let { data: { meta: { msg, status } } } = await this.$http.post('users', this.addForm)
-      // 添加结果处理
-      if (status === 201) {
-        this.addFormVisible = false
-        this.$message.success(msg)
+      if (status === 200) {
+        this.tableData = users
+        // this.$message.success(msg)
+        // 总数据条数
+        this.total = total
+        // 重置页码
+        this.pagenum = 1
       } else {
         this.$message.error(msg)
       }
     },
 
+    // // 添加用户
+    async addItem () {
+      let { data: { meta: { msg, status } } } = await this.$http.post('users', this.userForm)
+      // 添加结果处理
+      if (status === 201) {
+        this.addFormVisible = false
+        this.$message.success(msg)
+        this.getList()
+      // 清空输入框
+        this.userForm = {}
+      } else {
+        this.$message.error(msg)
+      }
+    },
+    // 取消添加
+    addNo () {
+      this.userForm = {}
+      this.addFormVisible = false
+    },
+
     // 分页更改
     handleSizeChange (val) {
+      // 重置页码
+      this.pagenum = 1
       this.pagesize = val
       this.getList()
     },
@@ -217,22 +220,39 @@ export default {
     },
 
     // 删除
-    async handleDelete (I) {
-      let { data: { meta: { status, msg } } } = await this.$http.delete(`users/${I}`)
-      if (status === 200) {
-        this.$message.success(msg)
-        this.getList()
-      } else {
-        this.$message.error(msg)
-      }
+    handleDelete (I) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        let { data: { meta: { status, msg } } } = await this.$http.delete(`users/${I}`)
+        if (status === 200) {
+          this.getList()
+          this.$message({
+            type: 'success',
+            message: msg
+          })
+        } else {
+          this.$message({
+            type: 'info',
+            message: msg
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消删除'
+        })
+      })
     },
     // 编辑
     async handleEdit (I) {
-      let res = await this.$http.get(`users/${I}`)
+      let res = await this.$http.get(`roles/${I}`)
       if (res.data.meta.status === 200) {
         // 弹出层
         this.EditFormVisible = true
-        this.editForm = res.data.data
+        this.userForm = res.data.data
       } else {
         this.$message.error(res.data.meta.msg)
       }
@@ -240,7 +260,7 @@ export default {
     // 确认编辑
     async handleEditOK () {
       // 当前editForm 中存在Id 是点击编辑的时候获取的
-      let res = await this.$http.put(`users/${this.editForm.id}`, this.editForm)
+      let res = await this.$http.put(`users/${this.userForm.id}`, this.userForm)
       if (res.data.meta.status === 200) {
         this.$message.success(res.data.meta.msg)
         this.EditFormVisible = false
@@ -248,6 +268,14 @@ export default {
       } else {
         this.$message.error(res.data.meta.msg)
       }
+      // 清空输入框
+      this.userForm = {}
+    },
+
+    // 取消编辑
+    editNO () {
+      this.userForm = {}
+      this.EditFormVisible = false
     },
     // 角色编辑
     async handleRole (I) {
