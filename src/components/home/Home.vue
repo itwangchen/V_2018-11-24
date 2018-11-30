@@ -17,18 +17,19 @@
     <el-container>
       <!-- aside -->
       <el-aside width="200px" class="aside">
-        <el-menu class="menu"  :unique-opened="true" :router="true">
-          <el-submenu :index="item.order" v-for="item in menus">
+        <el-menu class="menu" :unique-opened="true" :router="true">
+          <!-- :index 需要一个字符串,数字转换为字符串 number+''  -->
+          <el-submenu :key="item.id" :index="item.order+''" v-for="(item,i) in menus">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>{{item.authName}}</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item :index="ite.path" v-for="ite in item.children"> <i class="el-icon-menu"></i>{{ite.authName}}</el-menu-item>
+              <el-menu-item ::key="ite.id" :index="ite.path" v-for="ite in item.children"> <i class="el-icon-menu"></i>{{ite.authName}}</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-         
-         
+
+
         </el-menu>
       </el-aside>
       <!-- main -->
@@ -39,39 +40,39 @@
   </el-container>
 </template>
 <script>
-export default {
-  name: '',
-  data () {
-    return {
-      menus:[]
-    }
-  },
- async beforeCreate () {
-    // token验证
-    if (!localStorage.getItem('token')) {
-      this.$router.push({ path: '/login' })
-      // 提示登录
-      this.$message.error('请登录!')
-    }
-    //请求左侧栏目列表
- let res= await this.$http.get('menus')
-let {data,meta:{msg,status}}=res.data
-if ( status===200) {
-  this.menus=data
-  console.log(data);
-}
-  
-  },
-  methods: {
-    handelLoginOut () {
-      // 清除token
-      localStorage.clear()
-      // 跳转到登录页面
-      this.$router.push({ path: '/login' })
-      this.$message.success('退出成功!')
+  export default {
+    name: '',
+    data() {
+      return {
+        menus: []
+      }
+    },
+    async beforeCreate() {
+      // token验证
+      if (!localStorage.getItem('token')) {
+        this.$router.push({ path: '/login' })
+        // 提示登录
+        this.$message.error('请登录!')
+      }
+      //请求左侧栏目列表
+      let res = await this.$http.get('menus')
+      let { data, meta: { msg, status } } = res.data
+      if (status === 200) {
+        this.menus = data
+        console.log(data);
+      }
+
+    },
+    methods: {
+      handelLoginOut() {
+        // 清除token
+        localStorage.clear()
+        // 跳转到登录页面
+        this.$router.push({ path: '/login' })
+        this.$message.success('退出成功!')
+      }
     }
   }
-}
 </script>
 <style scoped>
   .container {
@@ -102,6 +103,7 @@ if ( status===200) {
     color: brown;
     line-height: 60px;
   }
+
   .menu {
     height: 100%;
   }
