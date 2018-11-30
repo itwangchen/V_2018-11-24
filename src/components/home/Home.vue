@@ -18,57 +18,17 @@
       <!-- aside -->
       <el-aside width="200px" class="aside">
         <el-menu class="menu"  :unique-opened="true" :router="true">
-          <el-submenu index="1">
+          <el-submenu :index="item.order" v-for="item in menus">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <span>{{item.authName}}</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="user"> <i class="el-icon-menu"></i>用户列表</el-menu-item>
+              <el-menu-item :index="ite.path" v-for="ite in item.children"> <i class="el-icon-menu"></i>{{ite.authName}}</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>权限管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="roles"> <i class="el-icon-menu"></i>角色列表</el-menu-item>
-              <el-menu-item index="rights"> <i class="el-icon-menu"></i>权限列表</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>商品管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="1-1"> <i class="el-icon-menu"></i>商品列表</el-menu-item>
-              <el-menu-item index="1-1"> <i class="el-icon-menu"></i>分类参数</el-menu-item>
-              <el-menu-item index="1-1"> <i class="el-icon-menu"></i>商品分类</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="4">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>订单管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="-1"> <i class="el-icon-menu"></i>商品列表</el-menu-item>
-              <el-menu-item index="1-1"> <i class="el-icon-menu"></i>分类参数</el-menu-item>
-              <el-menu-item index="1-1"> <i class="el-icon-menu"></i>商品分类</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="5">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>数据统计</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="1-1"> <i class="el-icon-menu"></i>订单管理</el-menu-item>
-              <el-menu-item index="1-1"> <i class="el-icon-menu"></i>数据统计</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
+         
+         
         </el-menu>
       </el-aside>
       <!-- main -->
@@ -83,15 +43,24 @@ export default {
   name: '',
   data () {
     return {
+      menus:[]
     }
   },
-  beforeCreate () {
+ async beforeCreate () {
     // token验证
     if (!localStorage.getItem('token')) {
       this.$router.push({ path: '/login' })
       // 提示登录
       this.$message.error('请登录!')
     }
+    //请求左侧栏目列表
+ let res= await this.$http.get('menus')
+let {data,meta:{msg,status}}=res.data
+if ( status===200) {
+  this.menus=data
+  console.log(data);
+}
+  
   },
   methods: {
     handelLoginOut () {
