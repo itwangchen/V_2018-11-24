@@ -12,17 +12,17 @@ export default new Router({
   routes: [
     {
       name: 'login',
-      path: '/',
+      path: '/login',
       component: Login
     },
     {
       name: 'home',
-      path: '/home',
+      path: '/',
       component: Home,
       children: [
         {name: 'user', path: '/user', component: User},
         {name: 'roles', path: '/roles', component: Roles},
-        {name: 'rights', path: '/rights', component: Rights},
+        {name: 'rights', path: '/rights', component: Rights}
       ]
     }
   ]

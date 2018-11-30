@@ -7,12 +7,15 @@ import MyServer from '@/plugins/http.js'
 import ElementUI from 'element-ui'
 import moment from 'moment'
 import 'element-ui/lib/theme-chalk/index.css'
+// 导入面包屑组件
+import Mybread from '@/components/common/Mybread'
 // base.css
 import '@/assets/css/base.css'
 Vue.use(ElementUI)
 Vue.use(MyServer)
 Vue.config.productionTip = false
 // 定义全局组件
+Vue.component(Mybread.name, Mybread)
 Vue.filter(
   // 时间格式化
   'fData', function (D) {

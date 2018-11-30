@@ -33,7 +33,7 @@ export default {
         this.$message.success(msg)
         // 写入token
         localStorage.setItem('token', token)
-        this.$router.push({ path: '/home' })
+        this.$router.push({ path: '/' })
       } else {
         this.$message.error(msg)
       }

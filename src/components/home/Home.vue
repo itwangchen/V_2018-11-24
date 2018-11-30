@@ -25,7 +25,6 @@
             </template>
             <el-menu-item-group>
               <el-menu-item index="user"> <i class="el-icon-menu"></i>用户列表</el-menu-item>
-
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
@@ -84,7 +83,6 @@ export default {
   name: '',
   data () {
     return {
-
     }
   },
   beforeCreate () {
@@ -100,7 +98,7 @@ export default {
       // 清除token
       localStorage.clear()
       // 跳转到登录页面
-      this.$router.push({ path: '/' })
+      this.$router.push({ path: '/login' })
       this.$message.success('退出成功!')
     }
   }
