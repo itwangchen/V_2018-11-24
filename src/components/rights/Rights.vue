@@ -16,9 +16,7 @@
                 </el-table-column>
                 <el-table-column label="层级">
                     <template slot-scope="scope">
-
                             {{scope.row.level | cengJ}}
-
                     </template>
                 </el-table-column>
             </el-table>
