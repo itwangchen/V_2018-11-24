@@ -29,7 +29,6 @@ let router = new Router({
         { name: 'rights', path: '/rights', component: Rights },
         { name: 'goodslist', path: '/goods', component: goodslist },
         { name: 'goodsadd', path: '/goodsadd', component: goodsadd }
-
       ]
     }
   ]
