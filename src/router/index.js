@@ -32,18 +32,42 @@ let router = new VueRouter({
   ]
 })
 // 路由卫士拦截登录实现
-router.beforeEach((to, from, next) => {
+ router.beforeEach((to, from, next) => {
+  // if (to.path === '/login') {
+  //   next()
+  // } else {
+
+  //   // 如果去的不是login
+  //   // 判断token token存在next()
+  //   const token = localStorage.getItem('token')
+  //   if (!token) {
+  //     // this.$router -> router
+  //     // 回到登录
+  //     // this.$message.warning('asdasd')
+  //     Message.warning('请先登录')
+  //     router.push({
+  //       name: 'login'
+  //     })
+  //     return
+  //   }
+  //   next()
+  // }
   // to 当前
   // 判断访问的组件如果是login 就进行下一步
   if (to.path === '/login') {
     next()
+  }else{
+    // 访问非登录页面,没有token
+    if (!localStorage.getItem('token')) {
+      router.push({ path: '/login' })
+      return
+    }
+    // 访问非login,有token
+    next()
   }
-  // 访问非登录页面,没有token
-  if (!localStorage.getItem('token')) {
-    router.push({ path: '/login' })
-    return
-  }
-  // 访问非login,有token
-  next()
+
 })
+
+
+
 export default router

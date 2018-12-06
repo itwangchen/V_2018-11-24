@@ -13,26 +13,25 @@ myServer.install = function (Vue) {
       // 写入token
       config.headers['Authorization'] = localStorage.getItem('token')
     }
-
     return config
   }, function (error) {
     // 对请求错误做些什么
     return Promise.reject(error)
   })
   // 添加响应拦截器
-  axios.interceptors.response.use(function (res) {    
-    // 对响应数据做点什么
-    let { meta: { status, msg } } = res.data    
-    if (status === 200 || status === 201) {
-      // Message.success(msg)
-    }else {
-      Message.warning(msg)
-    }
-    return res;
-  }, function (error) {
-    // 对响应错误做点什么
-    return Promise.reject(error);
-  });
+  // axios.interceptors.response.use(function (res) {    
+  //   // 对响应数据做点什么
+  //   let { meta: { status, msg } } = res.data    
+  //   if (status === 200 || status === 201) {
+  //     // Message.success(msg)
+  //   }else {
+  //     Message.warning(msg)
+  //   }
+  //   return res;
+  // }, function (error) {
+  //   // 对响应错误做点什么
+  //   return Promise.reject(error);
+  // });
   Vue.prototype.$http = axios
 }
 export default myServer
