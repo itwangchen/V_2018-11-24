@@ -1,18 +1,15 @@
 //路由的懒加载
-
 import Vue from 'vue'
-import Router from 'vue-router'
-
-//使用路由;懒加载
-const Login = () => import('@/components/login/Login')
-const Home = () => import('@/components/home/Home')
-const User = () => import('@/components/user/User')
-const Roles = () => import('@/components/roles/Roles')
-const Rights = () => import('@/components/rights/Rights')
-const goodslist = () => import('@/components/goods/goodslist')
-const goodsadd = () => import('@/components/goods/goodsadd')
-Vue.use(Router)
-let router = new Router({
+import VueRouter from 'vue-router'
+const Login =()=> import('@/components/login/Login')
+const Home =()=> import('@/components/home/Home')
+const User =()=> import('@/components/user/User')
+const Roles =()=> import('@/components/roles/Roles')
+const Rights =()=> import('@/components/rights/Rights')
+const goodslist =()=> import('@/components/goods/goodslist')
+const goodsadd =()=> import('@/components/goods/goodsadd')
+Vue.use(VueRouter)
+let router = new VueRouter({
   routes: [
     {
       name: 'login',
@@ -29,6 +26,7 @@ let router = new Router({
         { name: 'rights', path: '/rights', component: Rights },
         { name: 'goodslist', path: '/goods', component: goodslist },
         { name: 'goodsadd', path: '/goodsadd', component: goodsadd }
+
       ]
     }
   ]

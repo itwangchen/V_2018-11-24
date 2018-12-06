@@ -8,6 +8,7 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
+
 const createLintingRule = () => ({
   test: /\.(js|vue)$/,
   loader: 'eslint-loader',
@@ -24,6 +25,15 @@ module.exports = {
   entry: {
     app: './src/main.js'
   },
+  //配置cdn
+  //来源于package.json 中的包名 该包暴露在全局的变量名  
+    externals: {
+      'vue': 'Vue',
+      'vue-router':'VueRouter',
+      'element-ui':'ELEMENT',
+      'axios':'axios',
+      'moment':'moment'
+    }, 
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
