@@ -42,7 +42,7 @@
       </el-row>
       <!-- 表格 -->
       <template>
-        <el-table :data="tableData" style="width: 100%" current-row-key>
+        <el-table v-loading="loading" :data="tableData" style="width: 100%" current-row-key>
           <el-table-column type="index" prop="id" label="#" width="50">
           </el-table-column>
           <el-table-column prop="username" label="姓名">
@@ -119,6 +119,7 @@
 export default {
   data () {
     return {
+      loading:true,
       // 表格数据
       tableData: [],
       // 角色
@@ -157,15 +158,13 @@ export default {
       // 默认搜索空,获取全部数据
       let { data: { data: { users, total }, meta: { msg, status } } } = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.search_Input}`)
       if (status === 200) {
-        this.tableData = users
-        // this.$message.success(msg)
+        this.tableData = users      
         // 总数据条数
         this.total = total
         // 重置页码
         this.pagenum = 1
-      } else {
-        this.$message.error(msg)
-      }
+        this.loading=false
+      } 
     },
     // // 添加用户
     async addItem () {

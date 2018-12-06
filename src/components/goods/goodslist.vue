@@ -109,7 +109,7 @@ export default {
       this.total = resData.data.total
       this.list = resData.data.goods
       this.loading = false
-      // console.log(this.list)
+     
     }
   }
 }

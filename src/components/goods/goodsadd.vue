@@ -20,8 +20,7 @@
                 <!-- tabs -->
                 <el-tabs @tab-click="tabClick" v-model="active" tab-position="left" style="height: 450px; overflow: auto;">
                     <el-tab-pane name="1" label="基本信息">
-
-                        <!--     
+                        <!--
                             goods_name	商品名称	不能为空
                             goods_cat	以为','分割的分类列表	不能为空
                             goods_price	价格	不能为空
@@ -52,8 +51,7 @@
                             <el-cascader expand-trigger="hover" :props="prop" :options="options" v-model="selectedOptions"
                                 @change="handleChange">
                             </el-cascader>
-                            <!-- <el-input v-model="form.goods_number">
-                            </el-input> -->
+                           
                         </el-form-item>
                     </el-tab-pane>
                     <el-tab-pane name="2" label="商品参数">
@@ -67,9 +65,7 @@
                             <el-checkbox-group v-model="item.attr_vals">
                                 <el-checkbox :label="ite" border :key="i" size="medium" v-for="(ite,i) in item.attr_vals"></el-checkbox>
 
-
                             </el-checkbox-group>
-
 
                         </el-form-item>
 
@@ -101,135 +97,128 @@
     </el-card>
 </template>
 <script>
-    import 'quill/dist/quill.core.css'
-    import 'quill/dist/quill.snow.css'
-    import 'quill/dist/quill.bubble.css'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
-    import { quillEditor } from 'vue-quill-editor'
-    export default {
-        data() {
-            return {
-                //当前进度
-                active: '1',
-                form: {
-                    goods_name: '',//	商品名称	不能为空
-                    goods_price: '',//价格	不能为空
-                    goods_number: '',//	数量	不能为空
-                    goods_weight: '',//	重量	不能为空
-                    goods_introduce: '',//	介绍	可以为空
+import { quillEditor } from 'vue-quill-editor'
+export default {
+  data () {
+    return {
+      // 当前进度
+      active: '1',
+      form: {
+        goods_name: '', //	商品名称	不能为空
+        goods_price: '', // 价格	不能为空
+        goods_number: '', //	数量	不能为空
+        goods_weight: '', //	重量	不能为空
+        goods_introduce: '', //	介绍	可以为空
 
-                    goods_cat: '',	//以为','分割的分类列表	不能为空
-                    attrs: [],	//商品的参数（数组）                    
-                    //上传的图片临时路径（对象）	可以为空
-                    pics: []
+        goods_cat: '',	// 以为','分割的分类列表	不能为空
+        attrs: [],	// 商品的参数（数组）
+        // 上传的图片临时路径（对象）	可以为空
+        pics: []
 
-                },
-                //文件路径列表
-                fileList: [],
-                //三级选框数据源
-                options: [],
-                //绑定级联选值
-                selectedOptions: [],
-                //级联配置项
-                prop: {
-                    label: 'cat_name',
-                    value: 'cat_id',
-                    children: 'children'
-                },
-                // 动态参数的数据
-                arrDyparams: [],
-                // 静态参数的数据
-                arrStaticparams: [],
-                // 需要授权的 API ，必须在请求头中使用 Authorization 字段提供 token 令牌
-                tokenHeaders: {
-                    'Authorization': localStorage.getItem('token')
-                }
-            }
-        },
-        components: {
-            quillEditor
-        },
-       async beforeMount() {
-            //在实例挂载之前改变数据
-            let res = await this.$http.get(`categories`)
-            let { data, meta: { status, msg } } = res.data
-            if (status === 200) {
-                this.options = data
-            } else {
-                this.$message.error(msg)
-            }
-        },
-        
-
-        methods: {
-            async  handelAdd() {
-                //将三级选框数据进行拼接
-                this.form.goods_cat = this.selectedOptions.join(',')
-                let res = await this.$http.post(`goods`, this.form)
-                let { data, meta: { msg, status } } = res.data
-                if (status === 201) {
-                    this.$message.success(msg)
-                } else {
-                    this.$message.error(msg)
-                }
-
-
-            },
-            async tabClick() {
-                let thisIndex = this.active
-                if (thisIndex * 1 === 2) {
-                    //判断是否选择了级联选框
-                    if (this.selectedOptions.length === 3) {
-                        //获取商品参数
-                        let res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=many`)
-                        let { data, meta: { status, msg } } = res.data
-                        data.forEach(el => {
-                            el.attr_vals = el.attr_vals.split(',')
-                        });
-                        this.arrDyparams = data
-                        // console.log(data);
-                    } else {
-                        this.$message.error('请选择商品分类!')
-                    }
-                } else if (thisIndex * 1 === 3) {
-                    let res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=only`)
-
-
-                    let { data, meta: { status, msg } } = res.data
-                    this.arrStaticparams = data
-                }
-
-            },
-            //级联选择器改变触发的事件
-            handleChange(val) {
-
-            },
-            //删除图片
-            handleRemove(file, fileList) {
-                console.log(file, fileList, this.form.pics);
-                //对已上传的文件数组 进行判断 选出file 中的,进行删除
-                // console.log(file.name);
-                //返回删除的文件路径在pics 中的索引
-                let index = this.form.pics.findIndex((el) => {
-                    return el.pic === file.response.data.tmp_path
-                })
-                //将处理好的数组重新赋值给pics
-                this.form.pics = this.form.pics.splice(index, 1)
-            },
-            handlePreview(file) {
-                // console.log(file);
-            },
-            //上传成功
-            handleSuccess(file, fileList) {
-                // "pics":[
-                // {"pic":"/tmp_uploads/30f08d52c551ecb447277eae232304b8"}
-                // ],
-                this.form.pics.push({ 'pic': file.data.tmp_path })
-
-            }
-        }
+      },
+      // 文件路径列表
+      fileList: [],
+      // 三级选框数据源
+      options: [],
+      // 绑定级联选值
+      selectedOptions: [],
+      // 级联配置项
+      prop: {
+        label: 'cat_name',
+        value: 'cat_id',
+        children: 'children'
+      },
+      // 动态参数的数据
+      arrDyparams: [],
+      // 静态参数的数据
+      arrStaticparams: [],
+      // 需要授权的 API ，必须在请求头中使用 Authorization 字段提供 token 令牌
+      tokenHeaders: {
+        'Authorization': localStorage.getItem('token')
+      }
     }
+  },
+  components: {
+    quillEditor
+  },
+  async beforeMount () {
+    // 在实例挂载之前改变数据
+    let res = await this.$http.get(`categories`)
+    let { data, meta: { status, msg } } = res.data
+    if (status === 200) {
+      this.options = data
+    } else {
+      this.$message.error(msg)
+    }
+  },
 
+  methods: {
+    async  handelAdd () {
+      // 将三级选框数据进行拼接
+      this.form.goods_cat = this.selectedOptions.join(',')
+      let res = await this.$http.post(`goods`, this.form)
+      let { data, meta: { msg, status } } = res.data
+      if (status === 201) {
+        this.$message.success(msg)
+      } else {
+        this.$message.error(msg)
+      }
+    },
+    async tabClick () {
+      let thisIndex = this.active
+      if (thisIndex * 1 === 2) {
+        // 判断是否选择了级联选框
+        if (this.selectedOptions.length === 3) {
+          // 获取商品参数
+          let res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=many`)
+          let { data, meta: { status, msg } } = res.data
+          data.forEach(el => {
+            el.attr_vals = el.attr_vals.split(',')
+          })
+          this.arrDyparams = data
+          // console.log(data);
+        } else {
+          this.$message.error('请选择商品分类!')
+        }
+      } else if (thisIndex * 1 === 3) {
+        let res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=only`)
+
+        let { data, meta: { status, msg } } = res.data
+        this.arrStaticparams = data
+      }
+    },
+    // 级联选择器改变触发的事件
+    handleChange (val) {
+
+    },
+    // 删除图片
+    handleRemove (file, fileList) {
+      console.log(file, fileList, this.form.pics)
+      // 对已上传的文件数组 进行判断 选出file 中的,进行删除
+      // console.log(file.name);
+      // 返回删除的文件路径在pics 中的索引
+      let index = this.form.pics.findIndex((el) => {
+        return el.pic === file.response.data.tmp_path
+      })
+      // 将处理好的数组重新赋值给pics
+      this.form.pics = this.form.pics.splice(index, 1)
+    },
+    handlePreview (file) {
+      // console.log(file);
+    },
+    // 上传成功
+    handleSuccess (file, fileList) {
+      // "pics":[
+      // {"pic":"/tmp_uploads/30f08d52c551ecb447277eae232304b8"}
+      // ],
+      this.form.pics.push({ 'pic': file.data.tmp_path })
+    }
+  }
+}
 
 </script>
 <style>

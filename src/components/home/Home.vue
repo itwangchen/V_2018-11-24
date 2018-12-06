@@ -29,7 +29,6 @@
             </el-menu-item-group>
           </el-submenu>
 
-
         </el-menu>
       </el-aside>
       <!-- main -->
@@ -40,39 +39,38 @@
   </el-container>
 </template>
 <script>
-  export default {
-    name: '',
-    data() {
-      return {
-        menus: []
-      }
-    },
-    async beforeCreate() {
-      // token验证
-      if (!localStorage.getItem('token')) {
-        this.$router.push({ path: '/login' })
-        // 提示登录
-        this.$message.error('请登录!')
-      }
-      //请求左侧栏目列表
-      let res = await this.$http.get('menus')
-      let { data, meta: { msg, status } } = res.data
-      if (status === 200) {
-        this.menus = data
-        console.log(data);
-      }
-
-    },
-    methods: {
-      handelLoginOut() {
-        // 清除token
-        localStorage.clear()
-        // 跳转到登录页面
-        this.$router.push({ path: '/login' })
-        this.$message.success('退出成功!')
-      }
+export default {
+  name: '',
+  data () {
+    return {
+      menus: []
+    }
+  },
+  async beforeCreate () {
+    // token验证
+    if (!localStorage.getItem('token')) {
+      this.$router.push({ path: '/login' })
+      // 提示登录
+      this.$message.error('请登录!')
+    }
+    // 请求左侧栏目列表
+    let res = await this.$http.get('menus')
+    let { data, meta: { msg, status } } = res.data
+    if (status === 200) {
+      this.menus = data
+      console.log(data)
+    }
+  },
+  methods: {
+    handelLoginOut () {
+      // 清除token
+      localStorage.clear()
+      // 跳转到登录页面
+      this.$router.push({ path: '/login' })
+      this.$message.success('退出成功!')
     }
   }
+}
 </script>
 <style scoped>
   .container {

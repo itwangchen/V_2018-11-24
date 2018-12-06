@@ -26,25 +26,24 @@ let router = new Router({
         { name: 'rights', path: '/rights', component: Rights },
         { name: 'goodslist', path: '/goods', component: goodslist},
         {name: 'goodsadd', path: '/goodsadd', component: goodsadd}
-    
-      
+
       ]
     }
   ]
 })
-//路由卫士拦截登录实现
+// 路由卫士拦截登录实现
 router.beforeEach((to, from, next) => {
   // to 当前
-  //判断访问的组件如果是login 就进行下一步
+  // 判断访问的组件如果是login 就进行下一步
   if (to.path === '/login') {
     next()
   }
-  //访问非登录页面,没有token
+  // 访问非登录页面,没有token
   if (!localStorage.getItem('token')) {
     router.push({ path: '/login' })
     return
   }
-  //访问非login,有token
+  // 访问非login,有token
   next()
 })
 export default router
