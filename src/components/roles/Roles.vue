@@ -135,12 +135,9 @@ export default {
       let { data: { meta: { msg, status } } } = await this.$http.post('roles', this.roleForm)
       // 添加结果处理
       if (status === 201) {
-        this.addFormVisible = false
-        this.$message.success(msg)
+        this.addFormVisible = false      
         this.roleForm = {}
-      } else {
-        this.$message.error(msg)
-      }
+      } 
       this.getTers()
     },
     // 取消编辑
@@ -156,8 +153,7 @@ export default {
     // 取消编辑
     async  handleEditOK () {
       let res = await this.$http.put(`roles/${this.roleForm.roleId}`, this.roleForm)
-      this.EditFormVisible = false
-      console.log(res)
+      this.EditFormVisible = false     
       this.getTers()
     },
     // 删除角色
@@ -196,9 +192,7 @@ export default {
         console.log(res)
         // 弹出层
         this.roleForm = res.data.data
-      } else {
-        this.$message.error(res.data.meta.msg)
-      }
+      } 
     },
     async getTers () {
       // 获取权限列表
@@ -237,12 +231,8 @@ export default {
       let thisId = this.checkdId
       let { data: { meta: { msg, status } } } = await this.$http.post(`roles/${thisId}/rights`, { rids: listChecked })
       if (status === 200) {
-        this.getTers()
-        this.$message.success(msg)
-        this.getTers()
-      } else {
-        this.$message.error(msg)
-      }
+        this.getTers()     
+      } 
     },
     handleRolesN () {
       this.rolesFormVisible = false
@@ -255,11 +245,8 @@ export default {
       let { data, meta: { status, msg } } = res.data
       if (status == 200) {
         // 接收后端返回的权限数据,对原有数据重新赋值
-        item.children = data
-        this.$message.success(msg)
-      } else {
-        this.$message.error(msg)
-      }
+        item.children = data       
+      } 
     }
 
   }

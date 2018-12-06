@@ -29,13 +29,10 @@ export default {
       // 将数据发给后端接收响应
       let { data: { data: { token }, meta: { msg, status } } } = await this.$http.post('login', this.loginForm)
       if (status === 200) {
-        // 成功
-        this.$message.success(msg)
+        // 成功      
         // 写入token
         localStorage.setItem('token', token)
         this.$router.push({ path: '/' })
-      } else {
-        this.$message.error(msg)
       }
     }
 

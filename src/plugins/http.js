@@ -20,12 +20,11 @@ myServer.install = function (Vue) {
     return Promise.reject(error)
   })
   // 添加响应拦截器
-  axios.interceptors.response.use(function (res) {
-    
+  axios.interceptors.response.use(function (res) {    
     // 对响应数据做点什么
     let { meta: { status, msg } } = res.data    
     if (status === 200 || status === 201) {
-      Message.success(msg)
+      // Message.success(msg)
     }else {
       Message.warning(msg)
     }
@@ -36,5 +35,4 @@ myServer.install = function (Vue) {
   });
   Vue.prototype.$http = axios
 }
-
 export default myServer
